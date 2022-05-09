@@ -1,0 +1,56 @@
+language: node_js
+
+node_js:
+  - 14
+
+cache: yarn
+
+stages:
+  - test
+  - name: coverage_report
+    if: branch = main
+  - release
+
+jobs:
+  include:
+    - stage: test
+      # if: branch = main
+      name: "Unit Tests" 
+      provider: script
+      script: "yarn test"
+
+    - stage: coverage_report
+      name: "Coverage"
+      provider: script
+      before_script:
+        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        - chmod +x ./cc-test-reporter
+        - ./cc-test-reporter before-build
+      script: "yarn coverage"
+      after_script:
+        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+
+
+    # Define the release stage that runs semantic-release
+    - stage: release
+      node_js: lts/*
+      branches:
+        only:
+        - main
+        - next
+        - next-major
+        - beta
+        - alpha
+      # Advanced: optionally overwrite your default `script` step to skip the tests
+      script: skip
+      deploy:
+        on:
+          branch:
+          - main
+          - next
+          - next-major
+          - beta
+          - alpha
+        provider: script
+        skip_cleanup: true
+        script: "yarn run semantic-release"

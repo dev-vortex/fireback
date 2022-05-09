@@ -1,0 +1,14 @@
+eslint:
+    enabled: true
+    config:
+        extensions:
+            - .es6
+            - .ts
+            - .mjs
+exclude_patterns:
+  - ".yarn/"
+  - "node_modules/"
+  - "scripts/"
+  - "tests/"
+  - "dist/"
+  - "src/types"
