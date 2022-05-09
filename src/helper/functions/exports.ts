@@ -56,8 +56,8 @@ const getGroupPointer = (
  * @param ooptions Exports objects
  */
 const exportFunctions = (
-    base: string,
-    folder: string,
+    base: string = __dirname,
+    folder = './api',
     extension = '.func.js',
     options?: ExportFunctionOptions,
 ): Record<string, any> => {
