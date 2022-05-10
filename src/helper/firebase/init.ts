@@ -1,12 +1,30 @@
 import * as firebaseAdmin from 'firebase-admin'
+import { FireBackInterface } from '~/types'
+import exportFunctions, {
+    callableFunction,
+    cronFunction,
+    restFunction,
+} from '../functions'
 
-import firebaseConfig from '../../config/firebase'
+let firebaseConfig: firebaseAdmin.AppOptions
 
-// Since admin SDK can only be initialized once.
-try {
-    // firebaseAdmin.initializeApp(firebaseFunctions.config().firebase)
-    firebaseAdmin.initializeApp(firebaseConfig)
-    // eslint-disable-next-line no-empty
-} catch (e) {}
-
-export const admin = firebaseAdmin
+export const init = (
+    firebaseServiceConfig: firebaseAdmin.AppOptions,
+): FireBackInterface | false => {
+    if (!firebaseConfig && firebaseServiceConfig) {
+        firebaseConfig = firebaseServiceConfig
+    }
+    // Since admin SDK can only be initialized once.
+    try {
+        const admin = firebaseAdmin.initializeApp(firebaseConfig)
+        return {
+            admin,
+            exportFunctions,
+            callableFunction,
+            cronFunction,
+            restFunction,
+        }
+    } catch (e) {
+        return false
+    }
+}

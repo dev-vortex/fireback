@@ -7,7 +7,6 @@ import {
     RestFunctionInterface,
     RestServiceProvider,
 } from '../../types'
-export { admin } from '../firebase/init'
 
 export const defaultRegion: Readonly<RegionsType> = 'europe-west3' // TODO: allow config for default and specif by providing options
 export const defaultTimeZone: Readonly<string> = 'America/New_York' // TODO: allow config for default and specif by providing options
