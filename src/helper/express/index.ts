@@ -1,5 +1,7 @@
 import express, { Express, Router } from 'express'
+import { originValidator } from './middleware/cors'
 import { ProvidedOptionsType } from '../../types'
+// TODO: should use rete limiter to prevent denial of service https://lgtm.com/rules/1506065727959/
 
 const defaultOptions: ProvidedOptionsType = {
     cors: true,
@@ -10,23 +12,6 @@ let expressService: Express | undefined
 
 const prepareOptions = (providedOptions: ProvidedOptionsType) =>
     Object.assign(defaultOptions, providedOptions)
-
-const originValidator =
-    (origins: Array<string>) =>
-    (
-        origin: string,
-        callback: (error: Error | null, options?: any) => void,
-    ) => {
-        console.log('CORS: Requesting Origin', origin) // undefined
-        console.log('CORS: Allower', origins)
-        if (origins.indexOf(origin) !== -1) {
-            callback(null, true)
-        } else {
-            const err = new Error('Not allowed by CORS')
-            err.stack = ''
-            callback(err)
-        }
-    }
 
 const initMiddleware = (
     service: Express | Router,
