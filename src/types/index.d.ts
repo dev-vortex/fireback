@@ -1,3 +1,4 @@
+import * as firebaseAdmin from 'firebase-admin'
 import * as firebaseFunctions from 'firebase-functions'
 import { PathParams, IRoute } from 'express-serve-static-core'
 
@@ -49,12 +50,12 @@ interface FireBackInterface {
     ) => Record<string, any>
     callableFunction: (
         providedOptions?: FunctionOptionsType | Record<string, unknown>,
-    ) => FunctionBuilder
+    ) => firebaseFunctions.FunctionBuilder
     cronFunction: (
         timer: string,
-        serviceMethod: (context: EventContext) => any,
+        serviceMethod: (context: firebaseFunctions.EventContext) => any,
         providedOptions?: Record<string, any>,
-    ) => CloudFunction<unknown>
+    ) => firebaseFunctions.CloudFunction<unknown>
     restFunction: (
         path?: string,
         providedOptions?: Record<string, unknown> | FunctionOptionsType,
