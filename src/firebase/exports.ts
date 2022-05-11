@@ -100,13 +100,12 @@ const exportFunctions = (
 ): Record<string, any> => {
     const composedExtensions = getComposedExtensions(extensions)
     const basePath = base || getCallerPath(getCallerFile())
-    const toExport: Record<string, any> = {}
     const files = getFiles(composedExtensions, basePath, folder)
+    const toExport: Record<string, any> = {}
 
     files.forEach(file => {
         const extension = findFileExtension(file, composedExtensions)
-        const groupName = getGroupName(folder)
-        const groupNamePrefix = `${groupName}.`
+        const groupNamePrefix = `${getGroupName(folder)}.`
 
         if (extension) {
             const functionName = getFunctionName(file, extension)
