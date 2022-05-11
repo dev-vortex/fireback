@@ -1,12 +1,5 @@
-import { getApp, initRoute } from '../express'
 import * as firebaseFunctions from 'firebase-functions'
-import {
-    FunctionOptionsType,
-    ProvidedOptionsType,
-    RegionsType,
-    RestFunctionInterface,
-    RestServiceProvider,
-} from '../../types'
+import { FunctionOptionsType, RegionsType, RestServiceProvider } from '../types'
 
 export const defaultRegion: Readonly<RegionsType> = 'europe-west3' // TODO: allow config for default and specif by providing options
 export const defaultTimeZone: Readonly<string> = 'America/New_York' // TODO: allow config for default and specif by providing options
@@ -25,27 +18,11 @@ export const callableFunction = (
 ): firebaseFunctions.FunctionBuilder =>
     firebaseFunctions.region(prepareOptions(providedOptions).functionRegion)
 
-export const restFunction = (
-    path = '',
-    providedOptions: FunctionOptionsType | Record<string, unknown> = {},
-    initAppOptions: ProvidedOptionsType = {},
-): RestFunctionInterface => {
-    const router = initRoute(path, providedOptions, initAppOptions)
-    return {
-        route: router.route,
-        getFunctionExport: () => {
-            const currentApp = getApp() as RestServiceProvider | undefined
-            if (currentApp) {
-                return callableFunction(providedOptions).https.onRequest(
-                    currentApp,
-                )
-            }
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            return ((req, resp) => {
-                return
-            }) as firebaseFunctions.HttpsFunction
-        },
-    }
+export const httpsFunction = (
+    service: RestServiceProvider,
+    providedOptions?: FunctionOptionsType | Record<string, unknown>,
+): firebaseFunctions.HttpsFunction => {
+    return callableFunction(providedOptions).https.onRequest(service)
 }
 
 export const cronFunction = (

@@ -3,14 +3,14 @@ import { FireBackInterface } from '~/types'
 import exportFunctions, {
     callableFunction,
     cronFunction,
-    restFunction,
-} from '../functions'
+    httpsFunction,
+} from './index'
 
 let firebaseConfig: firebaseAdmin.AppOptions
 
 export const init = (
     firebaseServiceConfig: firebaseAdmin.AppOptions,
-): FireBackInterface | false => {
+): FireBackInterface => {
     if (!firebaseConfig && firebaseServiceConfig) {
         firebaseConfig = firebaseServiceConfig
     }
@@ -22,9 +22,14 @@ export const init = (
             exportFunctions,
             callableFunction,
             cronFunction,
-            restFunction,
+            httpsFunction,
         }
     } catch (e) {
-        return false
+        return {
+            exportFunctions,
+            callableFunction,
+            cronFunction,
+            httpsFunction,
+        }
     }
 }
