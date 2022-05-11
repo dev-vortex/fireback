@@ -1,8 +1,4 @@
-import { init } from './helper/firebase/init'
+import { init } from './firebase/init'
 
 export default init
-export {
-    callableFunction,
-    cronFunction,
-    restFunction,
-} from './helper/functions'
+export { callableFunction, cronFunction, httpsFunction } from './firebase'

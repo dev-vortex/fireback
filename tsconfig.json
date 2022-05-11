@@ -19,5 +19,5 @@
       "skipLibCheck": true,
       "forceConsistentCasingInFileNames": true
     },
-    "exclude": ["dist/**/*", "tests/**/*"]
+    "exclude": ["dist/**/*", "ignore/**/*", "tests/**/*"]
   }

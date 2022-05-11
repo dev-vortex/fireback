@@ -1,6 +1,6 @@
 import * as firebaseAdmin from 'firebase-admin'
 import * as firebaseFunctions from 'firebase-functions'
-import { PathParams, IRoute } from 'express-serve-static-core'
+import { IRouter } from 'express-serve-static-core'
 
 type ExportFunctionOptions = {
     basePath?: string
@@ -36,16 +36,16 @@ type RestServiceProvider = (
 ) => void | Promise<void>
 
 interface RestFunctionInterface {
-    route: (prefix: PathParams) => IRoute
+    feature: IRouter
     getFunctionExport: () => firebaseFunctions.HttpsFunction
 }
 
 interface FireBackInterface {
-    admin: firebaseAdmin.app.App
+    admin?: firebaseAdmin.app.App
     exportFunctions: (
         base?: string,
         folder?: string,
-        extension?: string,
+        extension?: string[],
         options?: ExportFunctionOptions | undefined,
     ) => Record<string, any>
     callableFunction: (
@@ -56,9 +56,8 @@ interface FireBackInterface {
         serviceMethod: (context: firebaseFunctions.EventContext) => any,
         providedOptions?: Record<string, any>,
     ) => firebaseFunctions.CloudFunction<unknown>
-    restFunction: (
-        path?: string,
-        providedOptions?: Record<string, unknown> | FunctionOptionsType,
-        initAppOptions?: ProvidedOptionsType,
-    ) => RestFunctionInterface
+    httpsFunction: (
+        service: RestServiceProvider,
+        providedOptions?: FunctionOptionsType | Record<string, unknown>,
+    ) => firebaseFunctions.HttpsFunction
 }
