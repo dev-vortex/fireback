@@ -26,7 +26,7 @@ const getFunctionName = (file: string, extension: string): string => {
         .slice(0, extensionSize) // Strip off extension
         .split('/')
         .join('_')
-    return camelCase(preparedFileName).replace('|', '_')
+    return camelCase(preparedFileName).replace(/\|/g, '_')
 }
 
 const getGroupPointer = (
