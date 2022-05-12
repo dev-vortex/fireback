@@ -54,5 +54,5 @@ jobs:
         provider: script
         skip_cleanup: true
         script: 
-          - "yarn run build"
-          - "yarn run semantic-release"
+          - yarn run build
+          - yarn run semantic-release
