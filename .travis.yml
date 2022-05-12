@@ -53,6 +53,6 @@ jobs:
           - alpha
         provider: script
         skip_cleanup: true
-        script: 
+        before_script:
           - yarn run build
-          - yarn run semantic-release
+        script: "yarn run semantic-release"
