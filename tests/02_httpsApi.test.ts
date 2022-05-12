@@ -4,7 +4,7 @@ import { expect } from 'chai'
 require('firebase-functions-test')()
 
 import { defaultRegion } from '../src/firebase/functions'
-import init, { httpsFunction } from '../src/index'
+import { init, httpsFunction } from '../src/index'
 import { FireBackInterface } from '../src/types'
 
 const serviceMocked = (req: Record<string, any>, res: Record<string, any>) => {

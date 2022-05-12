@@ -36,7 +36,7 @@ jobs:
       node_js: lts/*
       branches:
         only:
-        - main
+        # - main
         - next
         - next-major
         - beta
@@ -46,11 +46,13 @@ jobs:
       deploy:
         on:
           branch:
-          - main
+          # - main
           - next
           - next-major
           - beta
           - alpha
         provider: script
         skip_cleanup: true
-        script: "yarn run semantic-release"
+        script: 
+          - "yarn run build"
+          - "yarn run semantic-release"

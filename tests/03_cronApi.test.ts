@@ -3,7 +3,7 @@ import * as firebaseAdmin from 'firebase-admin'
 import { expect } from 'chai'
 require('firebase-functions-test')()
 
-import init, { cronFunction } from '../src/index'
+import { init, cronFunction } from '../src/index'
 import { EventContext } from 'firebase-functions'
 
 const serviceMethodMocked = (context: EventContext) => {
