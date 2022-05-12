@@ -16,24 +16,24 @@ const getGroupStructure = (startFolder: string) => {
         : structure
 }
 
-const getGroupName = (startFolder: string) => {
+const getGroupName = (startFolder: string): string => {
     return getGroupStructure(startFolder).join('.')
 }
 
-const getFunctionName = (file: string, extension: string) => {
+const getFunctionName = (file: string, extension: string): string => {
     const extensionSize = -1 * extension.length
     const preparedFileName = file
         .slice(0, extensionSize) // Strip off extension
         .split('/')
         .join('_')
-    return camelCase(preparedFileName).replace('|', '_')
+    return camelCase(preparedFileName).replace(/\|/g, '_')
 }
 
 const getGroupPointer = (
     currentExport: Record<string, any>,
     startFolder: string,
     options?: Record<string, any>,
-) => {
+): Record<string, any> => {
     let groupPointer = currentExport
     const groupStructure = getGroupStructure(
         startFolder.replace(options?.basePath ? options?.basePath : '', ''),
@@ -48,7 +48,10 @@ const getGroupPointer = (
     return groupPointer
 }
 
-const findFileExtension = (filename: string, extensions: string[]) => {
+const findFileExtension = (
+    filename: string,
+    extensions: string[],
+): string | undefined => {
     return extensions.find(extension => {
         return filename.indexOf(extension) >= 0
     })
@@ -61,7 +64,7 @@ const hasAppendExtension = (extension: string, lastExtensions: string[]) => {
     )
 }
 
-const getComposedExtensions = (extensions: string[]) => {
+const getComposedExtensions = (extensions: string[]): string[] => {
     const appendExtension = [`.ts`, `.js`]
     return extensions.reduce((finalList, extension) => {
         if (hasAppendExtension(extension, appendExtension)) {
@@ -74,7 +77,11 @@ const getComposedExtensions = (extensions: string[]) => {
     }, [] as string[])
 }
 
-const getFiles = (extension: string[], basePath: string, folder: string) => {
+const getFiles = (
+    extension: string[],
+    basePath: string,
+    folder: string,
+): string[] => {
     const pattern = `**/*${extension.join(',**/*')}`
     const finalPattern = extension.length > 1 ? `{${pattern}}` : pattern
     const cwd = resolve(basePath, folder)
@@ -92,7 +99,7 @@ const getFiles = (extension: string[], basePath: string, folder: string) => {
  * @param extension Extension to target
  * @param ooptions Exports objects
  */
-const exportFunctions = (
+export const exportFunctions = (
     base?: string,
     folder = './api',
     extensions = [`.func`],
@@ -129,5 +136,3 @@ const exportFunctions = (
 
 const getCallerPath = (callerFile: string) =>
     callerFile.split('/').slice(0, -1).join('/')
-
-export default exportFunctions

@@ -1,6 +1,5 @@
 import * as firebaseAdmin from 'firebase-admin'
 import * as firebaseFunctions from 'firebase-functions'
-import { IRouter } from 'express-serve-static-core'
 
 type ExportFunctionOptions = {
     basePath?: string
@@ -23,22 +22,10 @@ type FunctionOptionsTimeZone = {
 
 type FunctionOptionsType = FunctionOptionsRegionType & FunctionOptionsTimeZone
 
-type ProvidedOptionsType = {
-    cors?: boolean
-    allowedOrigins?: Array<string>
-    security?: boolean
-    mysql?: boolean
-}
-
 type RestServiceProvider = (
     req: firebaseFunctions.https.Request,
     resp: firebaseFunctions.Response<any>,
 ) => void | Promise<void>
-
-interface RestFunctionInterface {
-    feature: IRouter
-    getFunctionExport: () => firebaseFunctions.HttpsFunction
-}
 
 interface FireBackInterface {
     admin?: firebaseAdmin.app.App

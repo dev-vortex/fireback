@@ -1,10 +1,7 @@
 import * as firebaseAdmin from 'firebase-admin'
 import { FireBackInterface } from '~/types'
-import exportFunctions, {
-    callableFunction,
-    cronFunction,
-    httpsFunction,
-} from './index'
+import { exportFunctions } from './index'
+import { callableFunction, cronFunction, httpsFunction } from './index'
 
 let firebaseConfig: firebaseAdmin.AppOptions
 

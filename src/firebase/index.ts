@@ -1,4 +1,2 @@
-import exportFunctions from './exports'
-
-export default exportFunctions
+export { exportFunctions } from './exports'
 export { callableFunction, cronFunction, httpsFunction } from './functions'
