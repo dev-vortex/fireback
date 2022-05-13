@@ -27,24 +27,14 @@ type RestServiceProvider = (
     resp: firebaseFunctions.Response<any>,
 ) => void | Promise<void>
 
-interface FireBackInterface {
-    admin?: firebaseAdmin.app.App
-    exportFunctions: (
-        base?: string,
-        folder?: string,
-        extension?: string[],
-        options?: ExportFunctionOptions | undefined,
-    ) => Record<string, any>
-    callableFunction: (
-        providedOptions?: FunctionOptionsType | Record<string, unknown>,
-    ) => firebaseFunctions.FunctionBuilder
-    cronFunction: (
-        timer: string,
-        serviceMethod: (context: firebaseFunctions.EventContext) => any,
-        providedOptions?: Record<string, any>,
-    ) => firebaseFunctions.CloudFunction<unknown>
-    httpsFunction: (
-        service: RestServiceProvider,
-        providedOptions?: FunctionOptionsType | Record<string, unknown>,
-    ) => firebaseFunctions.HttpsFunction
+interface IExportFunctionsPrefs {
+    base?: string
+    folder?: string
+    extensions?: string[]
+    options?: ExportFunctionOptions
+    firebaseServiceConfig?: firebaseAdmin.AppOptions
 }
+
+type ExportFunctionsMethod = (
+    preferences?: IExportFunctionsPrefs,
+) => Record<string, any>
