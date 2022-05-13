@@ -1,32 +1,29 @@
 import * as firebaseAdmin from 'firebase-admin'
-import { FireBackInterface } from '~/types'
-import { exportFunctions } from './index'
-import { callableFunction, cronFunction, httpsFunction } from './index'
+// import { FireBackInterface } from '~/types'
+// import { exportFunctions } from './index'
+// import { callableFunction, cronFunction, httpsFunction } from './index'
 
 let firebaseConfig: firebaseAdmin.AppOptions
 
-export const init = (
-    firebaseServiceConfig: firebaseAdmin.AppOptions,
-): FireBackInterface => {
-    if (!firebaseConfig && firebaseServiceConfig) {
-        firebaseConfig = firebaseServiceConfig
-    }
-    // Since admin SDK can only be initialized once.
-    try {
-        const admin = firebaseAdmin.initializeApp(firebaseConfig)
-        return {
-            admin,
-            exportFunctions,
-            callableFunction,
-            cronFunction,
-            httpsFunction,
+export const initApp = (
+    firebaseServiceConfig?: firebaseAdmin.AppOptions,
+): firebaseAdmin.app.App | boolean => {
+    if (firebaseServiceConfig) {
+        if (!firebaseConfig && firebaseServiceConfig) {
+            firebaseConfig = firebaseServiceConfig
         }
-    } catch (e) {
-        return {
-            exportFunctions,
-            callableFunction,
-            cronFunction,
-            httpsFunction,
+        try {
+            return firebaseAdmin.initializeApp(firebaseConfig)
+        } catch (error) {
+            if (
+                (error as firebaseAdmin.FirebaseError).code ===
+                'app/duplicate-app'
+            ) {
+                return true
+            } else {
+                throw error
+            }
         }
     }
+    return false
 }

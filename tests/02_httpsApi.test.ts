@@ -4,17 +4,16 @@ import { expect } from 'chai'
 require('firebase-functions-test')()
 
 import { defaultRegion } from '../src/firebase/functions'
-import { init, httpsFunction } from '../src/index'
-import { FireBackInterface } from '../src/types'
+import { initApp, exportFunctions, httpsFunction } from '../src/index'
 
 const serviceMocked = (req: Record<string, any>, res: Record<string, any>) => {
     console.log('Mocked HTTPS Service', req, res)
 }
 
 describe('fireback - HTTPS', () => {
-    let fireback: FireBackInterface | false
+    let fireback: firebaseAdmin.app.App | boolean
     before(() => {
-        fireback = init({
+        fireback = initApp({
             credential: firebaseAdmin.credential.applicationDefault(),
         })
     })
@@ -71,73 +70,124 @@ describe('fireback - HTTPS', () => {
         it('should return exported functions respecting defaults (very slow!!!)', () => {
             expect(fireback).not.to.be.false
             if (fireback) {
-                const result = fireback.exportFunctions()
-                expect(result).to.key('api')
-                expect(result.api).to.key('httpMockFunc_v1')
+                const result = exportFunctions()
+                expect(result).to.key('http')
+                expect(result.http).to.have.property('mockFunc_v1')
+                expect(result.http).to.have.property('user')
             }
         })
         it('should return exported functions respecting base location only', () => {
             expect(fireback).not.to.be.false
             if (fireback) {
-                const result = fireback.exportFunctions(__dirname)
-                expect(result).to.key('api')
-                expect(result.api).to.key('httpMockFunc_v1')
+                const result = exportFunctions({ base: __dirname })
+                expect(result).to.key('http')
+                expect(result.http).to.have.property('mockFunc_v1')
+                expect(result.http).to.have.property('user')
+                expect(result.http.user).to.have.property('1_0')
+                expect(result.http.user['1_0']).to.have.property('adminPrivate')
+                expect(result.http.user['1_0']).to.have.property('clientOpen')
+                expect(result.http.user['1_0']).to.have.property(
+                    'partnerA_secure',
+                )
+                expect(result.http.user['1_0']).to.have.property(
+                    'partnerB_secure',
+                )
             }
         })
         it('should return exported functions respecting base location only and folder name', () => {
             expect(fireback).not.to.be.false
             if (fireback) {
-                const result = fireback.exportFunctions(__dirname, './api')
-                expect(result).to.key('api')
-                expect(result.api).to.key('httpMockFunc_v1')
+                const result = exportFunctions({
+                    base: __dirname,
+                    folder: './api',
+                })
+                expect(result).to.key('http')
+                expect(result.http).to.have.property('mockFunc_v1')
+                expect(result.http).to.have.property('user')
+                expect(result.http.user).to.have.property('1_0')
+                expect(result.http.user['1_0']).to.have.property('adminPrivate')
+                expect(result.http.user['1_0']).to.have.property('clientOpen')
+                expect(result.http.user['1_0']).to.have.property(
+                    'partnerA_secure',
+                )
+                expect(result.http.user['1_0']).to.have.property(
+                    'partnerB_secure',
+                )
             }
         })
         it('should return exported functions respecting base location only, folder name and extensions (slow)', () => {
             expect(fireback).not.to.be.false
             if (fireback) {
-                const result = fireback.exportFunctions(__dirname, './api', [
-                    '.f',
-                ])
-                expect(result).to.key('api')
-                expect(result.api).to.key('httpMockExtra_v1')
+                const result = exportFunctions({
+                    base: __dirname,
+                    folder: './api',
+                    extensions: ['.f'],
+                })
+                expect(result).to.key('http')
+                expect(result.http).to.have.property('mockExtra_v1')
             }
         })
         it('should return exported functions respecting base location only, folder name and full extensions', () => {
             expect(fireback).not.to.be.false
             if (fireback) {
-                const result = fireback.exportFunctions(__dirname, './api', [
-                    '.f.ts',
-                ])
-                expect(result).to.key('api')
-                expect(result.api).to.key('httpMockExtra_v1')
+                const result = exportFunctions({
+                    base: __dirname,
+                    folder: './api',
+                    extensions: ['.f.ts'],
+                })
+                expect(result).to.key('http')
+                expect(result.http).to.have.property('mockExtra_v1')
             }
         })
         it('should return exported functions respecting folder names', () => {
             expect(fireback).not.to.be.false
             if (fireback) {
-                const result = fireback.exportFunctions(
-                    __dirname,
-                    './api',
-                    undefined,
-                    {},
+                const result = exportFunctions({
+                    base: __dirname,
+                    folder: './api',
+                    options: {},
+                })
+                expect(result).to.key('http')
+                expect(result.http).to.have.property('mockFunc_v1')
+                expect(result.http).to.have.property('user')
+                expect(result.http.user).to.have.property('1_0')
+                expect(result.http.user['1_0']).to.have.property('adminPrivate')
+                expect(result.http.user['1_0']).to.have.property('clientOpen')
+                expect(result.http.user['1_0']).to.have.property(
+                    'partnerA_secure',
                 )
-                expect(result).to.key('api')
-                expect(result.api).to.key('httpMockFunc_v1')
+                expect(result.http.user['1_0']).to.have.property(
+                    'partnerB_secure',
+                )
             }
         })
         it('should return exported functions grouped by functionGroupPath option', () => {
             expect(fireback).not.to.be.false
             if (fireback) {
-                const result = fireback.exportFunctions(
-                    __dirname,
-                    './api',
-                    undefined,
-                    {
+                const result = exportFunctions({
+                    base: __dirname,
+                    folder: './api',
+                    options: {
                         functionGroupPath: './apiMock',
                     },
+                })
+                expect(result).to.have.property('apiMock')
+                expect(result.apiMock).to.have.property('http')
+                expect(result.apiMock.http).to.have.property('mockFunc_v1')
+                expect(result.apiMock.http).to.have.property('user')
+                expect(result.apiMock.http.user).to.have.property('1_0')
+                expect(result.apiMock.http.user['1_0']).to.have.property(
+                    'adminPrivate',
                 )
-                expect(result).to.key('apiMock')
-                expect(result.apiMock).to.key('httpMockFunc_v1')
+                expect(result.apiMock.http.user['1_0']).to.have.property(
+                    'clientOpen',
+                )
+                expect(result.apiMock.http.user['1_0']).to.have.property(
+                    'partnerA_secure',
+                )
+                expect(result.apiMock.http.user['1_0']).to.have.property(
+                    'partnerB_secure',
+                )
             }
         })
     })
