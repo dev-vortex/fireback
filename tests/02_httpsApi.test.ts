@@ -148,6 +148,7 @@ describe('fireback - HTTPS', () => {
                     options: {},
                 })
                 expect(result).to.key('http')
+                expect(result.http).not.to.have.property('mockExtra_v1')
                 expect(result.http).to.have.property('mockFunc_v1')
                 expect(result.http).to.have.property('user')
                 expect(result.http.user).to.have.property('1_0')
