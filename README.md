@@ -162,7 +162,7 @@ This type of function will allow us to expose HTTPS services like REST APIs. Her
 
 ```typescript
 import { httpsFunction } from '@dev-vortex/fireback'
-// 1. Import your https service (eg: Express, Fastify, Koa, Hapi, TypeGraphQL)
+// 1. Import your https service (eg: Express, Fastify, Koa, Hapi, TypeGraphQL, Moleculer)
 
 // 2. Prepare all the necessary endpoints/routes, security and logic withing the httpsService
 
