@@ -10,6 +10,10 @@ import getCallerFile from 'get-caller-file'
 import { initApp } from './init'
 import { ExportFunctionsMethod } from '../types'
 
+const globalCache = {
+    modules: {} as Record<string, any>,
+}
+
 const normalizeName = (name: string): string => {
     const preparedName = name.replace(/[\|\.]/g, '#')
     return camelCase(preparedName).replace(/\#/g, '_')
@@ -122,16 +126,23 @@ export const exportFunctions: ExportFunctionsMethod = (preferences = {}) => {
     files.forEach(file => {
         const extension = findFileExtension(file, composedExtensions)
         const callingGroupName = `${getGroupNameFromFile(file)}.`
-
         if (extension) {
             const functionName = getFunctionName(file, extension)
+            const functionNameWithGroup = `${callingGroupName}${functionName}`
             if (
                 !process.env.FUNCTION_TARGET ||
                 process.env.FUNCTION_TARGET === functionName ||
-                process.env.FUNCTION_TARGET ===
-                    `${callingGroupName}${functionName}`
+                process.env.FUNCTION_TARGET === functionNameWithGroup
             ) {
-                const mod = require(resolve(basePath, folder, file))
+                let mod: any
+                if (globalCache.modules[functionNameWithGroup]) {
+                    mod = globalCache.modules[functionNameWithGroup]
+                } else {
+                    mod = globalCache.modules[
+                        functionNameWithGroup
+                    ] = require(resolve(basePath, folder, file))
+                }
+                // const mod = require(resolve(basePath, folder, file))
                 const asExp = getGroupPointer(toExport, file, options || {})
                 asExp[functionName] = mod.default || mod
             }
