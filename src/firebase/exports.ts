@@ -8,11 +8,7 @@ import glob from 'glob'
 import camelCase from 'camelcase'
 import getCallerFile from 'get-caller-file'
 import { initApp } from './init'
-import { ExportFunctionsMethod } from '../types'
-
-const globalCache = {
-    modules: {} as Record<string, any>,
-}
+import type { ExportFunctionsMethod } from '../types'
 
 const normalizeName = (name: string): string => {
     const preparedName = name.replace(/[\|\.]/g, '#')
@@ -135,10 +131,10 @@ export const exportFunctions: ExportFunctionsMethod = (preferences = {}) => {
                 process.env.FUNCTION_TARGET === functionNameWithGroup
             ) {
                 let mod: any
-                if (globalCache.modules[functionNameWithGroup]) {
-                    mod = globalCache.modules[functionNameWithGroup]
+                if (firebackGlobalCache.modules[functionNameWithGroup]) {
+                    mod = firebackGlobalCache.modules[functionNameWithGroup]
                 } else {
-                    mod = globalCache.modules[
+                    mod = firebackGlobalCache.modules[
                         functionNameWithGroup
                     ] = require(resolve(basePath, folder, file))
                 }

@@ -30,7 +30,7 @@ npm install @dev-vortex/fireback
 ```
 
 ## Configuration
-The app neds an initializatiion moment. This can be achieved in isolation through the exported method `initApp` or directly by using the exported method `exportFunctions`.
+The app needs an initializatiion moment. This can be achieved in isolation through the exported method `initApp` or directly by using the exported method `exportFunctions`.
 
 > **Note -** This process is a requirement from Firebase you can see it here: https://firebase.google.com/docs/reference/node/firebase#initializeapp
 

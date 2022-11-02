@@ -38,3 +38,9 @@ interface IExportFunctionsPrefs {
 type ExportFunctionsMethod = (
     preferences?: IExportFunctionsPrefs,
 ) => Record<string, any>
+
+interface GlobalCacheManager {
+    setGlobalChacheValue: (name: string, value: unknown) => void
+    removeGlobalChache: (name: string) => boolean
+    getGlobalCache: (name: string) => unknown
+}
