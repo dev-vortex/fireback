@@ -173,6 +173,23 @@ export default httpsFunction(
 
 ```
 
+#### PubSub Function
+This type of function will allow us to trigger a function through a message sent pipeline/topic. This allows us to delegate extra processing of data passing it to other functions
+
+```typescript
+import { pubSubFunction } from '@dev-vortex/fireback'
+
+export default pubSubFunction(
+    'topic-name',
+    (message, context) => {
+        ...
+    },
+    { functionRegion: 'europe-west1' }
+)
+
+```
+
+
 ## Utilities
 
 ### Using Firebase Global Cache
