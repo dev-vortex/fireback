@@ -8,11 +8,7 @@ import glob from 'glob'
 import camelCase from 'camelcase'
 import getCallerFile from 'get-caller-file'
 import { initApp } from './init'
-import { ExportFunctionsMethod } from '../types'
-
-const globalCache = {
-    modules: {} as Record<string, any>,
-}
+import type { ExportFunctionsMethod } from '../types'
 
 const normalizeName = (name: string): string => {
     const preparedName = name.replace(/[\|\.]/g, '#')
@@ -102,6 +98,37 @@ const getFiles = (
     })
 }
 
+const getFunctionDeploymentNumber = () => {
+    return process.env.K_REVISION || 0
+}
+
+const cleanFunctionCacheIfNewVersion = (functionNameWithGroup: string) => {
+    const deploymentNr = getFunctionDeploymentNumber()
+    const cachedVersion = firebackGlobalCache.modules[
+        functionNameWithGroup
+    ] as Record<string, unknown>
+    if (cachedVersion && !cachedVersion[deploymentNr]) {
+        delete firebackGlobalCache.modules[functionNameWithGroup]
+    }
+}
+
+const getCachedFunctionByName = (
+    functionNameWithGroup: string,
+    path: string,
+): any => {
+    const deploymentNr = getFunctionDeploymentNumber()
+    const cachedVersion = firebackGlobalCache.modules[
+        functionNameWithGroup
+    ] as Record<string, unknown>
+    if (cachedVersion && cachedVersion[deploymentNr]) {
+        return cachedVersion[deploymentNr]
+    } else {
+        return (firebackGlobalCache.modules[functionNameWithGroup] = {
+            [deploymentNr]: require(path),
+        })
+    }
+}
+
 /**
  * Exports all files that matches an extension
  *
@@ -134,15 +161,11 @@ export const exportFunctions: ExportFunctionsMethod = (preferences = {}) => {
                 process.env.FUNCTION_TARGET === functionName ||
                 process.env.FUNCTION_TARGET === functionNameWithGroup
             ) {
-                let mod: any
-                if (globalCache.modules[functionNameWithGroup]) {
-                    mod = globalCache.modules[functionNameWithGroup]
-                } else {
-                    mod = globalCache.modules[
-                        functionNameWithGroup
-                    ] = require(resolve(basePath, folder, file))
-                }
-                // const mod = require(resolve(basePath, folder, file))
+                cleanFunctionCacheIfNewVersion(functionNameWithGroup)
+                const mod = getCachedFunctionByName(
+                    functionNameWithGroup,
+                    resolve(basePath, folder, file),
+                )
                 const asExp = getGroupPointer(toExport, file, options || {})
                 asExp[functionName] = mod.default || mod
             }

@@ -2,13 +2,18 @@ import * as firebaseAdmin from 'firebase-admin'
 
 let firebaseConfig: firebaseAdmin.AppOptions
 
+const prepareConfig = (firebaseServiceConfig?: firebaseAdmin.AppOptions) => {
+    firebaseConfig = firebaseConfig || firebaseServiceConfig
+    if (!firebaseConfig) {
+        return false
+    }
+    return true
+}
+
 export const initApp = (
     firebaseServiceConfig?: firebaseAdmin.AppOptions,
 ): firebaseAdmin.app.App | boolean => {
-    if (firebaseServiceConfig) {
-        if (!firebaseConfig && firebaseServiceConfig) {
-            firebaseConfig = firebaseServiceConfig
-        }
+    if (prepareConfig(firebaseServiceConfig)) {
         try {
             return firebaseAdmin.initializeApp(firebaseConfig)
         } catch (error) {

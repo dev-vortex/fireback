@@ -191,5 +191,35 @@ describe('fireback - HTTPS', () => {
                 )
             }
         })
+
+        it('should return exported functions and having it present in the global cache', () => {
+            expect(fireback).not.to.be.false
+            if (fireback) {
+                expect(
+                    global.firebackGlobalCache.modules['http.mockExtra_v1'],
+                ).to.have.key('0')
+                let golbalInfo = global.firebackGlobalCache.modules[
+                    'http.mockExtra_v1'
+                ] as Record<string, unknown>
+                expect(golbalInfo['0']).to.exist
+
+                process.env.K_REVISION = '22'
+                process.env.FUNCTION_TARGET = 'http.mockExtra_v1'
+
+                const result = exportFunctions({
+                    base: __dirname,
+                    folder: './api',
+                    extensions: ['.f.ts'],
+                })
+                expect(result).to.key('http')
+                expect(result.http).to.have.property('mockExtra_v1')
+
+                golbalInfo = global.firebackGlobalCache.modules[
+                    'http.mockExtra_v1'
+                ] as Record<string, unknown>
+                expect(golbalInfo[0]).to.not.exist
+                expect(golbalInfo[parseInt(process.env.K_REVISION)]).to.exist
+            }
+        })
     })
 })
