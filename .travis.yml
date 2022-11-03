@@ -33,7 +33,8 @@ jobs:
 
     # Define the release stage that runs semantic-release
     - stage: release
-      node_js: lts/*
+      name: "Deploy"
+      # node_js: lts/*
       branches:
         only:
         # - main
