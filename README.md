@@ -172,4 +172,27 @@ export default httpsFunction(
 )
 
 ```
-##### 
+
+## Utilities
+
+### Using Firebase Global Cache
+In firebase, we are always trying to optimise performance. One of the mechanisms available is known as the Global Cache, where underlying firebase service will try to "persist" all variables set in the global space between functions and function invocations.
+
+> Check Firebase docs: [Use global variables to reuse objects in future invocations](https://firebase.google.com/docs/functions/tips#use_global_variables_to_reuse_objects_in_future_invocations)
+
+Since developers will use this library in a specific scope, we have added a helper to help define global variables (without greatly pollute the global space).
+
+To use this helper you will need to:
+
+```typescript
+import { getGlobalCacheManager } from '@dev-vortex/fireback'
+
+// Set a new variable
+getGlobalCacheManager.set('variableName', 'variableValue')
+
+// Get a variable
+const variable = getGlobalCacheManager.get('variableName')
+
+// Remove / delete variable
+const wasDeleted = getGlobalCacheManager.remove('variableName')
+```

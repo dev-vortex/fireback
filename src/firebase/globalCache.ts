@@ -1,10 +1,5 @@
 import { GlobalCacheManager } from '~/types'
 
-global.firebackGlobalCache = {
-    modules: {} as Record<string, unknown>,
-    values: {} as Record<string, unknown>,
-}
-
 const setGlobalChacheValue = (name: string, value: unknown): void => {
     firebackGlobalCache.values[name] = value
 }
@@ -19,7 +14,7 @@ const removeGlobalChache = (name: string): boolean => {
 }
 
 const getGlobalCache = (name: string): unknown => {
-    return firebackGlobalCache.values[name] || undefined
+    return firebackGlobalCache.values[name]
 }
 
 /**
@@ -28,7 +23,7 @@ const getGlobalCache = (name: string): unknown => {
  * @see https://firebase.google.com/docs/functions/tips#use_global_variables_to_reuse_objects_in_future_invocations
  */
 export const getGlobalCacheManager = (): GlobalCacheManager => ({
-    setGlobalChacheValue,
-    removeGlobalChache,
-    getGlobalCache,
+    set: setGlobalChacheValue,
+    remove: removeGlobalChache,
+    get: getGlobalCache,
 })

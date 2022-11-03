@@ -40,7 +40,7 @@ type ExportFunctionsMethod = (
 ) => Record<string, any>
 
 interface GlobalCacheManager {
-    setGlobalChacheValue: (name: string, value: unknown) => void
-    removeGlobalChache: (name: string) => boolean
-    getGlobalCache: (name: string) => unknown
+    set: (name: string, value: unknown) => void
+    remove: (name: string) => boolean
+    get: (name: string) => unknown
 }
