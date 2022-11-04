@@ -4,6 +4,7 @@ export {
     callableFunction,
     cronFunction,
     httpsFunction,
+    pubSubFunction,
 } from './firebase'
 
 // Initializing global cache variable
