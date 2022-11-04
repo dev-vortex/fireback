@@ -1,5 +1,4 @@
 import * as firebaseFunctions from 'firebase-functions'
-import { Message } from 'firebase-functions/v1/pubsub'
 import { FunctionOptionsType, RegionsType, RestServiceProvider } from '../types'
 
 export const defaultRegion: Readonly<RegionsType> = 'europe-west3' // TODO: allow config for default and specif by providing options
@@ -39,11 +38,11 @@ export const cronFunction = (
 export const pubSubFunction = (
     topicName: string,
     serviceMethod: (
-        message: Message,
+        message: firebaseFunctions.pubsub.Message,
         context: firebaseFunctions.EventContext,
     ) => any,
     providedOptions = {},
-): firebaseFunctions.CloudFunction<Message> =>
+): firebaseFunctions.CloudFunction<firebaseFunctions.pubsub.Message> =>
     callableFunction(providedOptions)
         .pubsub.topic(topicName)
         .onPublish(serviceMethod)
