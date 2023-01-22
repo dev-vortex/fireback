@@ -1,0 +1,132 @@
+defaults: &defaults
+  working_directory: ~/prj
+  docker:
+    - image: circleci/node:16
+
+version: 2.1
+
+aliases:
+  - &yarn-cache-key 'yarn-cache-{{ arch }}-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}'
+  - &yarn-cache-restore
+      restore_cache:
+        name: Restore Yarn Package Cache
+        key: *yarn-cache-key
+  - &yarn-cache-save
+      save_cache:
+        name: Save Yarn Package Cache
+        key: *yarn-cache-key
+        paths:
+          - node_modules
+  - &yarn-install
+      run:
+        name: Yarn Packages installation
+        command: yarn install --frozen-lockfile --non-interactive
+
+jobs:
+  checkout_code:
+    <<: *defaults
+    steps:
+      - checkout
+      - persist_to_workspace:
+          root: ~/prj
+          paths:
+            - .
+
+  install_packages:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/prj
+      - *yarn-cache-restore
+      - *yarn-install
+      - *yarn-cache-save
+
+      - persist_to_workspace:
+          root: ~/prj
+          paths:
+            - node_modules
+
+  unit_tests:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/prj
+      - run: yarn test
+
+  coverage_report:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/prj
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run: 
+          name: Generate coverage report
+          command: |
+            ./cc-test-reporter before-build
+            yarn coverage
+            ./cc-test-reporter after-build --exit-code $?
+  build_package:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/prj
+      - run: yarn build
+      - persist_to_workspace:
+          root: ~/prj
+          paths:
+            - dist
+
+  release_package:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/prj
+      - run: yarn semantic-release
+
+workflows:
+  test-build-release:
+    jobs:
+      - checkout_code
+      - install_packages:
+          requires:
+            - checkout_code
+      - unit_tests:
+          requires:
+            - install_packages
+          filters:
+            branches:
+              ignore:
+                - main
+      - coverage_report:
+          requires:
+            - install_packages
+          filters:
+            branches:
+              only:
+                - main
+      - build_package:
+          requires:
+            - unit_tests
+          filters:
+            branches:
+              only:
+                - next
+                - next-major
+                - beta
+                - alpha
+      - release_package:
+          requires:
+            - build_package
+          context: 
+            - Tech - NPM Deployments            
+          filters:
+            branches:
+              only:
+                - next
+                - next-major
+                - beta
+                - alpha
