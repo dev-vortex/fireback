@@ -74,6 +74,28 @@ describe('fireback - HTTPS', () => {
                 expect(result).to.key('http')
                 expect(result.http).to.have.property('mockFunc_v1')
                 expect(result.http).to.have.property('user')
+                expect(result.http.user).to.have.property('1_0')
+                expect(result.http.user['1_0']).to.have.property('adminPrivate')
+                expect(result.http.user['1_0']).to.have.property('clientOpen')
+                expect(result.http.user['1_0']).to.have.property(
+                    'partnerA_secure',
+                )
+                expect(result.http.user['1_0']).to.have.property(
+                    'partnerB_secure',
+                )
+                expect(
+                    typeof result.http.user['1_0'].adminPrivate === 'function',
+                ).to.true
+                expect(typeof result.http.user['1_0'].clientOpen === 'function')
+                    .to.true
+                expect(
+                    typeof result.http.user['1_0'].partnerA_secure ===
+                        'function',
+                ).to.true
+                expect(
+                    typeof result.http.user['1_0'].partnerB_secure ===
+                        'function',
+                ).to.true                
             }
         })
         it('should return exported functions respecting base location only', () => {
