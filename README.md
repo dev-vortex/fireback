@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://travis-ci.com/github/dev-vortex/fireback"><img src="https://badgen.net/travis/dev-vortex/fireback?icon=travis&label=build"/></a>
+    <a href="https://dl.circleci.com/status-badge/redirect/gh/dev-vortex/fireback/tree/main"><img src="https://badgen.net/circleci/github/dev-vortex/fireback?icon=circleci&label=build"/></a>
     <a href="https://www.npmjs.com/package/@dev-vortex/fireback"><img src="https://badgen.net/npm/v/@dev-vortex/fireback?icon=npm&label"/></a>
     <a href="https://www.npmjs.com/package/@dev-vortex/fireback"><img src="https://badgen.net/npm/license/@dev-vortex/fireback?icon=npm"/></a> 
     <a href="https://www.npmjs.com/package/@dev-vortex/fireback"><img src="https://badgen.net/npm/types/@dev-vortex/fireback?icon=typescript"/></a> 
