@@ -125,7 +125,7 @@ const getCachedFunctionByName = (
     } else {
         return (firebackGlobalCache.modules[functionNameWithGroup] = {
             [deploymentNr]: require(path),
-        })
+        })[deploymentNr]
     }
 }
 
@@ -135,7 +135,7 @@ const getCachedFunctionByName = (
  * @param base Folder base
  * @param folder Source folder for search
  * @param extension Extension to target
- * @param ooptions Exports objects
+ * @param options Exports objects
  */
 export const exportFunctions: ExportFunctionsMethod = (preferences = {}) => {
     const {
